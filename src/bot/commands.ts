@@ -67,6 +67,34 @@ export function registerCommands(db: Database) {
   // ПУБЛИЧНЫЕ КОМАНДЫ (с проверкой binding)
   // ============================================
 
+  // /help - показать список команд
+  bot.command('help', async (ctx) => {
+    const userId = ctx.from?.id;
+    const isOwner = userId === Number(process.env.OWNER_USER_ID);
+
+    const helpLines = ['<b>🎬 Movie Rec Bot - Команды</b>\n'];
+
+    // Публичные команды
+    helpLines.push('<b>Доступные команды:</b>');
+    helpLines.push('/help - показать это сообщение');
+    helpLines.push('/recommend - получить подборку фильмов и сериалов');
+    helpLines.push('/more - получить ещё одну подборку');
+
+    // Owner-only команды
+    if (isOwner) {
+      helpLines.push('\n<b>Команды администратора:</b>');
+      helpLines.push('/bind_here - привязать бота к текущему топику');
+      helpLines.push('/unbind - снять привязку');
+      helpLines.push('/start_bot - включить автоматический режим');
+      helpLines.push('/stop_bot - выключить автоматический режим');
+      helpLines.push('/status - показать текущий статус бота');
+    }
+
+    helpLines.push('\n<i>Автоматические подборки отправляются каждую пятницу в 18:00 МСК</i>');
+
+    await ctx.reply(helpLines.join('\n'), { parse_mode: 'HTML' });
+  });
+
   // /recommend - получить подборку
   bot.command(
     'recommend',
